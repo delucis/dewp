@@ -9,6 +9,8 @@ function coerceId(id: unknown) {
 	return id ? String(id) : undefined;
 }
 
+const OpenClosedSchema = z.enum(['open', 'closed', '']);
+
 export const PostSchema = z.object({
 	id: z.number().describe('Unique identifier for the post.'),
 	date: z.coerce.date().describe("The date the post was published, in the site's timezone."),
@@ -35,10 +37,8 @@ export const PostSchema = z.object({
 	featured_media: z
 		.preprocess(coerceId, reference('media').optional())
 		.describe('A reference to the featured media for the post.'),
-	comment_status: z
-		.enum(['open', 'closed'])
-		.describe('Whether or not comments are open on the post.'),
-	ping_status: z.enum(['open', 'closed']).describe('Whether or not the post can be pinged.'),
+	comment_status: OpenClosedSchema.describe('Whether or not comments are open on the post.'),
+	ping_status: OpenClosedSchema.describe('Whether or not the post can be pinged.'),
 	sticky: z.boolean().describe('Whether or not the post should be treated as sticky.'),
 	template: z.string().describe('The theme file to use to display the post.'),
 	format: z.string(),
@@ -71,8 +71,8 @@ export const PageSchema = z.object({
 	featured_media: z.number(),
 	parent: z.preprocess(coerceId, reference('pages').optional()),
 	menu_order: z.number(),
-	comment_status: z.string(),
-	ping_status: z.string(),
+	comment_status: OpenClosedSchema,
+	ping_status: OpenClosedSchema,
 	template: z.string(),
 	meta: z.array(z.any()).or(z.record(z.any())),
 	// _links: LinksSchema,
@@ -142,8 +142,8 @@ export const MediaSchema = z.object({
 	type: z.string(),
 	title: z.object({ rendered: z.string() }),
 	author: z.preprocess(coerceId, reference('users')),
-	comment_status: z.enum(['open', 'closed', '']),
-	ping_status: z.enum(['open', 'closed']),
+	comment_status: OpenClosedSchema,
+	ping_status: OpenClosedSchema,
 	meta: z.array(z.any()).or(z.record(z.any())),
 	template: z.string(),
 	alt_text: z.string(),
@@ -243,7 +243,7 @@ export const SiteSettingsSchema = z.object({
 	description: z.string(),
 	url: z.string(),
 	home: z.string(),
-	gmt_offset: z.number(),
+	gmt_offset: z.coerce.number(),
 	timezone_string: z.string(),
 	site_logo: z.preprocess(coerceId, reference('media').optional()),
 	site_icon: z.preprocess(coerceId, reference('media').optional()),
