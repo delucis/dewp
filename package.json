@@ -1,0 +1,11 @@
+{
+  "name": "@dewp/root",
+  "version": "0.0.0",
+  "private": true,
+  "author": "delucis",
+  "license": "MIT",
+  "packageManager": "pnpm@9.8.0",
+  "devDependencies": {
+    "astro": "^5.0.0-beta"
+  }
+}

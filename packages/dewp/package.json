@@ -1,0 +1,16 @@
+{
+	"name": "dewp",
+	"version": "0.0.0",
+	"author": "delucis",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		"./loaders": "./loaders.ts"
+	},
+	"devDependencies": {
+		"astro": "^5.0.0-beta"
+	},
+	"peerDependencies": {
+		"astro": "^5.0.0-beta"
+	}
+}
