@@ -1,7 +1,18 @@
 {
 	"name": "dewp",
+	"description": "Tools for migrating from WordPress to Astro",
+	"keywords": [
+		"withastro",
+		"astro-loader"
+	],
 	"version": "0.0.0",
-	"author": "delucis",
+	"author": "Chris Swithinbank <swithinbank@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/delucis/dewp",
+		"directory": "packages/dewp"
+	},
+	"bugs": "https://github.com/delucis/dewp/issues",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
