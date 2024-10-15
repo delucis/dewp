@@ -87,7 +87,7 @@ const heroImage = featured_media && (await getEntry(featured_media));
 						</div>
 						<h1 set:html={title.rendered} />
 						<p>
-							By {author.data.name}
+							By {author?.data?.name || 'Unknown Author'}
 							{
 								categories.length > 0 && (
 									<>in {categories.map((category) => category.data.name).join(', ')}</>
