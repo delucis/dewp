@@ -1,0 +1,25 @@
+---
+// Recursive component that renders a tree structure of page links.
+
+import type { CollectionEntry } from 'astro:content';
+import { resolvePageSlug } from 'dewp/content-utils';
+
+type PageMap = Map<string, { parent: CollectionEntry<'pages'>; children: PageMap }>;
+
+interface Props {
+	tree: PageMap;
+}
+
+const tree = [...Astro.props.tree.values()];
+---
+
+<ul>
+	{
+		tree.map(async ({ parent, children }) => (
+			<li>
+				<a href={`/${await resolvePageSlug(parent)}`} set:html={parent.data.title.rendered} />
+				<Astro.self tree={children} />
+			</li>
+		))
+	}
+</ul>

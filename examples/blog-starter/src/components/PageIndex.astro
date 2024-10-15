@@ -1,0 +1,32 @@
+---
+// This component builds a tree structure from the WordPress pages collection.
+// It uses each page’s `parent` property (if set) to create a hierarchy and show links to all pages.
+
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import PageTree from './PageTree.astro';
+
+type PageMap = Map<string, { parent: CollectionEntry<'pages'>; children: PageMap }>;
+const tree: PageMap = new Map();
+
+const pages = await getCollection('pages');
+
+for (const page of pages) {
+	// Build up a path of “breadcrumbs“ to the current page (i.e. a list of parents).
+	const breadcrumbs = [page];
+	let parentReference = page.data.parent;
+	while (parentReference) {
+		const resolvedParent = await getEntry(parentReference);
+		parentReference = resolvedParent.data.parent;
+		breadcrumbs.unshift(resolvedParent);
+	}
+	// Use the breadcrumbs to add this page at the correct position in the tree.
+	let branch = tree;
+	for (const crumb of breadcrumbs) {
+		const node = branch.get(crumb.id) || { parent: crumb, children: new Map() };
+		branch.set(crumb.id, node);
+		branch = node.children;
+	}
+}
+---
+
+<PageTree {tree} />

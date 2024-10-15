@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from 'astro:content';
+import { resolvePageSlug } from 'dewp/content-utils';
+import Page from '../layouts/Page.astro';
+
+export async function getStaticPaths() {
+	const pages = await getCollection('pages');
+
+	return await Promise.all(
+		pages.map(async (page) => ({
+			params: { slug: await resolvePageSlug(page) },
+			props: page,
+		}))
+	);
+}
+
+const page = Astro.props;
+const { Content } = await render(page);
+---
+
+<Page {...page.data}>
+	<Content />
+</Page>
