@@ -16,7 +16,8 @@
 	"license": "MIT",
 	"type": "module",
 	"exports": {
-		"./loaders": "./loaders.ts"
+		"./loaders": "./loaders.ts",
+		"./content-utils": "./content-utils.ts"
 	},
 	"devDependencies": {
 		"astro": "^5.0.0-beta"
