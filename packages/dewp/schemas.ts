@@ -24,9 +24,20 @@ export const PostSchema = z.object({
 	status: z.string().describe('A named status for the post.'),
 	type: z.string().describe('Type of post.'),
 	link: z.string().url().describe('URL to the post.'),
-	title: z.object({ rendered: z.string() }).describe('The title for the post.'),
+	title: z
+		.object({
+			rendered: z
+				.string()
+				.describe(
+					'A rendered HTML string for the post title. Best used with Astro’s `set:html` directive.'
+				),
+		})
+		.describe('The title for the post.'),
 	content: z
-		.object({ rendered: z.string(), protected: z.boolean() })
+		.object({
+			rendered: z.string().describe('A rendered HTML string for the full post content.'),
+			protected: z.boolean(),
+		})
 		.describe('The content for the post.'),
 	excerpt: z
 		.object({ rendered: z.string(), protected: z.boolean() })
@@ -41,8 +52,22 @@ export const PostSchema = z.object({
 	ping_status: OpenClosedSchema.describe('Whether or not the post can be pinged.'),
 	sticky: z.boolean().describe('Whether or not the post should be treated as sticky.'),
 	template: z.string().describe('The theme file to use to display the post.'),
-	format: z.string(),
-	meta: z.array(z.any()).or(z.record(z.any())),
+	format: z
+		.enum([
+			'standard',
+			'aside',
+			'chat',
+			'gallery',
+			'link',
+			'image',
+			'quote',
+			'status',
+			'video',
+			'audio',
+			'',
+		])
+		.describe('The format for the post.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields object or array.'),
 	categories: z
 		.preprocess(coerceId, reference('categories'))
 		.array()
@@ -54,103 +79,137 @@ export const PostSchema = z.object({
 });
 
 export const PageSchema = z.object({
-	id: z.number(),
-	date: z.coerce.date(),
-	date_gmt: z.coerce.date(),
-	guid: z.object({ rendered: z.string() }),
-	modified: z.coerce.date(),
-	modified_gmt: z.coerce.date(),
-	slug: z.string(),
-	status: z.string(),
-	type: z.string(),
-	link: z.string(),
-	title: z.object({ rendered: z.string() }),
-	content: z.object({ rendered: z.string(), protected: z.boolean() }),
-	excerpt: z.object({ rendered: z.string(), protected: z.boolean() }),
-	author: z.preprocess(coerceId, reference('users')),
-	featured_media: z.preprocess(coerceId, reference('media').optional()),
-	parent: z.preprocess(coerceId, reference('pages').optional()),
-	menu_order: z.number(),
-	comment_status: OpenClosedSchema,
-	ping_status: OpenClosedSchema,
-	template: z.string(),
-	meta: z.array(z.any()).or(z.record(z.any())),
-	// _links: LinksSchema,
+	id: z.number().describe('Unique identifier for the page.'),
+	date: z.coerce.date().describe("The date the page was published, in the site's timezone."),
+	date_gmt: z.coerce.date().describe('The date the page was published, as GMT.'),
+	guid: z.object({ rendered: z.string() }).describe('The globally unique identifier for the page.'),
+	modified: z.coerce
+		.date()
+		.describe("The date the page was last modified, in the site's timezone."),
+	modified_gmt: z.coerce.date().describe('The date the page was last modified, as GMT.'),
+	slug: z.string().describe('An alphanumeric identifier for the page unique to its type.'),
+	status: z
+		.enum(['publish', 'future', 'draft', 'pending', 'private'])
+		.describe('A named status for the page.'),
+	type: z.string().describe('Type of page.'),
+	link: z.string().describe('URL to the page.'),
+	title: z
+		.object({
+			rendered: z
+				.string()
+				.describe(
+					'A rendered HTML string for the page title. Best used with Astro’s `set:html` directive.'
+				),
+		})
+		.describe('The title for the page.'),
+	content: z
+		.object({
+			rendered: z.string().describe('A rendered HTML string for the full page content.'),
+			protected: z.boolean(),
+		})
+		.describe('The content for the page.'),
+	excerpt: z
+		.object({
+			rendered: z.string().describe('A rendered HTML string for the page excerpt.'),
+			protected: z.boolean(),
+		})
+		.describe('The excerpt for the page.'),
+	author: z
+		.preprocess(coerceId, reference('users'))
+		.describe('A reference to the author of the page.'),
+	featured_media: z
+		.preprocess(coerceId, reference('media').optional())
+		.describe('A reference to the featured media for the post.'),
+	parent: z
+		.preprocess(coerceId, reference('pages').optional())
+		.describe('A reference to a parent page.'),
+	menu_order: z.number().describe('The order of the page in relation to other pages.'),
+	comment_status: OpenClosedSchema.describe('Whether or not comments are open on this page.'),
+	ping_status: OpenClosedSchema.describe('Whether or not the page can be pinged.'),
+	template: z.string().describe('The theme file to use to display the page.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields.'),
 });
 
 export const TagSchema = z.object({
-	id: z.number(),
-	count: z.number(),
-	description: z.string(),
-	link: z.string().url(),
-	name: z.string(),
-	slug: z.string(),
-	taxonomy: z.string(),
-	meta: z.array(z.any()).or(z.record(z.any())),
+	id: z.number().describe('Unique identifier for the term.'),
+	count: z.number().describe('Number of published posts for the term.'),
+	description: z.string().describe('HTML description of the term.'),
+	link: z.string().url().describe('URL of the term.'),
+	name: z.string().describe('HTML title for the term.'),
+	slug: z.string().describe('An alphanumeric identifier for the term unique to its type.'),
+	taxonomy: z.string().describe('Type attribution for the term.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields.'),
 });
 
-export const CategorySchema = z.object({
-	id: z.number(),
-	count: z.number(),
-	description: z.string(),
-	link: z.string().url(),
-	name: z.string(),
-	slug: z.string(),
-	taxonomy: z.string(),
-	parent: z.preprocess(coerceId, reference('categories').optional()),
-	meta: z.array(z.any()).or(z.record(z.any())),
+export const CategorySchema = TagSchema.extend({
+	parent: z
+		.preprocess(coerceId, reference('categories').optional())
+		.describe('A reference to a parent category.'),
 });
 
 export const CommentSchema = z.object({
-	id: z.number(),
-	author: z.number(),
-	author_name: z.string(),
-	author_url: z.string(),
-	content: z.object({ rendered: z.string() }),
-	date: z.coerce.date(),
-	date_gmt: z.coerce.date(),
-	link: z.string().url(),
-	parent: z.preprocess(coerceId, reference('comments').optional()),
-	post: z.number(),
-	status: z.string(),
-	type: z.string(),
-	author_avatar_urls: z.record(z.string().url()),
-	meta: z.array(z.any()).or(z.record(z.any())),
+	id: z.number().describe('Unique identifier for the comment.'),
+	author: z
+		.preprocess(coerceId, reference('users').optional())
+		.describe('A reference to the author of the comment, if author was a user.'),
+	author_name: z.string().describe('Display name for the comment author.'),
+	author_url: z.string().describe('URL for the comment author.'),
+	content: z.object({ rendered: z.string() }).describe('The content for the comment.'),
+	date: z.coerce.date().describe("The date the comment was published, in the site's timezone."),
+	date_gmt: z.coerce.date().describe('The date the comment was published, as GMT.'),
+	link: z.string().url().describe('URL to the comment.'),
+	parent: z
+		.preprocess(coerceId, reference('comments').optional())
+		.describe('A reference to a parent comment.'),
+	post: z.number().describe('A reference to the associated post.'),
+	status: z.string().describe('State of the comment.'),
+	type: z.string().describe('Type of the comment.'),
+	author_avatar_urls: z.record(z.string().url()).describe('Avatar URLs for the comment author.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields.'),
 });
 
 export const UserSchema = z.object({
-	id: z.number(),
-	name: z.string(),
-	url: z.string(),
-	description: z.string(),
-	link: z.string().url(),
-	slug: z.string(),
-	avatar_urls: z.record(z.string().url()),
-	meta: z.array(z.any()).or(z.record(z.any())),
+	id: z.number().describe('Unique identifier for the user.'),
+	name: z.string().describe('Display name for the user.'),
+	url: z.string().describe('URL of the user.'),
+	description: z.string().describe('Description of the user.'),
+	link: z.string().url().describe('Author URL of the user.'),
+	slug: z.string().describe('An alphanumeric identifier for the user.'),
+	avatar_urls: z.record(z.string().url()).describe('Avatar URLs for the user.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields.'),
 });
 
 export const MediaSchema = z.object({
-	id: z.number(),
-	date: z.coerce.date().nullable(),
-	date_gmt: z.coerce.date().nullable(),
-	guid: z.object({ rendered: z.string() }),
-	link: z.string().url(),
-	modified: z.coerce.date(),
-	modified_gmt: z.coerce.date(),
-	slug: z.string(),
-	status: z.string(),
-	type: z.string(),
-	title: z.object({ rendered: z.string() }),
-	author: z.preprocess(coerceId, reference('users')),
-	comment_status: OpenClosedSchema,
-	ping_status: OpenClosedSchema,
-	meta: z.array(z.any()).or(z.record(z.any())),
-	template: z.string(),
-	alt_text: z.string(),
-	caption: z.object({ rendered: z.string() }),
-	description: z.object({ rendered: z.string() }),
-	media_type: z.enum(['image', 'file']),
-	mime_type: z.string(),
+	id: z.number().describe('Unique identifier for the item.'),
+	date: z.coerce
+		.date()
+		.nullable()
+		.describe("The date the item was published, in the site's timezone."),
+	date_gmt: z.coerce.date().nullable().describe('The date the post was published, as GMT.'),
+	guid: z.object({ rendered: z.string() }).describe('The globally unique identifier for the item.'),
+	link: z.string().url().describe('URL to the media item.'),
+	modified: z.coerce
+		.date()
+		.describe("The date the item was last modified, in the site's timezone."),
+	modified_gmt: z.coerce.date().describe('The date the item was last modified, as GMT.'),
+	slug: z.string().describe('An alphanumeric identifier for the item unique to its type.'),
+	status: z
+		.enum(['publish', 'future', 'draft', 'pending', 'private', 'inherit'])
+		.describe('A named status for the item.'),
+	type: z.string().describe('Type of item.'),
+	title: z.object({ rendered: z.string() }).describe('The title for the post.'),
+	author: z
+		.preprocess(coerceId, reference('users'))
+		.describe('A reference to the author of the post.'),
+	comment_status: OpenClosedSchema.describe('Whether or not comments are open on the post.'),
+	ping_status: OpenClosedSchema.describe('Whether or not the post can be pinged.'),
+	meta: z.array(z.any()).or(z.record(z.any())).describe('Meta fields.'),
+	template: z.string().describe('The theme file to use to display the post.'),
+	alt_text: z.string().describe('Alternative text to display when attachment is not displayed.'),
+	caption: z.object({ rendered: z.string() }).describe('The attachment caption.'),
+	description: z.object({ rendered: z.string() }).describe('The attachment description.'),
+	media_type: z.enum(['image', 'file']).describe('Attachment type.'),
+	mime_type: z.string().describe('The attachment MIME type.'),
 	media_details: z
 		.object({
 			filesize: z.number(),
@@ -196,56 +255,71 @@ export const MediaSchema = z.object({
 				z.object({}),
 			])
 		)
-		.or(z.object({})),
-	post: z.preprocess(coerceId, reference('posts').optional()),
-	source_url: z.string(),
+		.or(z.object({}))
+		.describe('An object containing details about the media file, specific to its type.'),
+	post: z
+		.preprocess(coerceId, reference('posts').optional())
+		.describe('The ID for the associated post of the attachment.'),
+	source_url: z.string().describe('URL to the original attachment file.'),
 });
 
 export const StatusSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	private: z.boolean().optional(),
-	protected: z.boolean().optional(),
-	public: z.boolean(),
-	queryable: z.boolean(),
-	show_in_list: z.boolean().optional(),
-	slug: z.string(),
-	date_floating: z.boolean(),
+	id: z.string().describe('Unique identifier for this status definition.'),
+	name: z.string().describe('The title for the status.'),
+	public: z
+		.boolean()
+		.describe('Whether posts of this status should be shown in the front end of the site.'),
+	queryable: z.boolean().describe('Whether posts with this status should be publicly-queryable.'),
+	slug: z.string().describe('An alphanumeric identifier for the status.'),
+	date_floating: z
+		.boolean()
+		.describe('Whether posts of this status may have floating published dates.'),
 });
 
 export const TaxonomySchema = z.object({
-	id: z.string(),
-	description: z.string(),
-	hierarchical: z.boolean(),
-	name: z.string(),
-	slug: z.string(),
-	types: z.string().array(),
-	rest_base: z.string(),
-	rest_namespace: z.string().default('wp/v2'),
+	id: z.string().describe('Unique identifier for this taxonomy definition.'),
+	description: z.string().describe('A human-readable description of the taxonomy.'),
+	hierarchical: z.boolean().describe('Whether or not the taxonomy should have children.'),
+	name: z.string().describe('The title for the taxonomy.'),
+	slug: z.string().describe('An alphanumeric identifier for the taxonomy.'),
+	types: z.string().array().describe('Types associated with the taxonomy.'),
+	rest_base: z.string().describe('REST base route for the taxonomy.'),
+	rest_namespace: z.string().default('wp/v2').describe('REST namespace route for the taxonomy.'),
 });
 
 export const TypeSchema = z.object({
-	id: z.string(),
-	description: z.string(),
-	hierarchical: z.boolean(),
-	name: z.string(),
-	slug: z.string(),
-	has_archive: z.boolean().optional(),
+	id: z.string().describe('A unique identifier for the post type.'),
+	description: z.string().describe('A human-readable description of the post type.'),
+	hierarchical: z.boolean().describe('Whether or not the post type should have children.'),
+	name: z.string().describe('The title for the post type.'),
+	slug: z.string().describe('An alphanumeric identifier for the post type.'),
+	has_archive: z
+		.union([z.boolean(), z.string()])
+		.default(false)
+		.describe(
+			'If the value is a string, the value will be used as the archive slug. If the value is false the post type has no archive.'
+		),
 	taxonomies: z.string().array(),
-	rest_base: z.string(),
-	rest_namespace: z.string().default('wp/v2'),
-	icon: z.string().nullable().default(null),
+	rest_base: z.string().describe('REST base route for the post type.'),
+	rest_namespace: z.string().default('wp/v2').describe("REST route's namespace for the post type."),
+	icon: z.string().nullable().default(null).describe('The icon for the post type.'),
 });
 
 export const SiteSettingsSchema = z.object({
 	id: z.literal('settings').default('settings'),
-	name: z.string(),
-	description: z.string(),
-	url: z.string(),
-	home: z.string(),
-	gmt_offset: z.coerce.number(),
-	timezone_string: z.string(),
-	site_logo: z.preprocess(coerceId, reference('media').optional()),
-	site_icon: z.preprocess(coerceId, reference('media').optional()),
-	site_icon_url: z.string().optional(),
+	name: z.string().describe('The site title.'),
+	description: z.string().describe('A human-readable description of the site.'),
+	url: z.string().describe('The URL of the site.'),
+	home: z.string().describe('The URL of the site homepage. (Usually the same as `url`.)'),
+	gmt_offset: z.coerce
+		.number()
+		.describe("The site's timezone expressed as an offset in hours from GMT"),
+	timezone_string: z.string().describe('The site\'s timezone as a string, e.g. `"Europe/Paris"`.'),
+	site_logo: z
+		.preprocess(coerceId, reference('media').optional())
+		.describe('Reference to a media attachment to use as the site logo.'),
+	site_icon: z
+		.preprocess(coerceId, reference('media').optional())
+		.describe('Reference to a media attachment to use as the site icon.'),
+	site_icon_url: z.string().optional().describe('URL to a resource to use as the site icon.'),
 });
