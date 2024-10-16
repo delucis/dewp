@@ -4,8 +4,8 @@
 npm create astro@latest -- --template delucis/dewp/examples/blog-starter
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/delucis/dewp/tree/latest/examples/blog-starter)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/delucis/dewp/tree/latest/examples/blog-starter)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/delucis/dewp/tree/main/examples/blog-starter)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/delucis/dewp/tree/main/examples/blog-starter)
 
 > 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
