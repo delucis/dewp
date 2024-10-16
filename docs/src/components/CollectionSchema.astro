@@ -1,0 +1,83 @@
+---
+import { zodToJsonSchema } from 'zod-to-json-schema';
+import * as schemas from '../../../packages/dewp/schemas';
+
+interface Props {
+	collection: keyof typeof schemas;
+}
+
+const zodSchema = schemas[Astro.props.collection];
+const { definitions } = zodToJsonSchema(zodSchema, 'schema');
+
+if (!definitions?.schema) {
+	throw new Error();
+}
+const { schema } = definitions;
+
+type JsonSchema7Type = (typeof definitions)[string];
+
+let entries: [key: string, schema: JsonSchema7Type][] = [];
+if ('type' in schema && schema.type === 'object' && 'properties' in schema) {
+	entries = Object.entries(schema.properties || {});
+}
+
+const getDefault = (schema: JsonSchema7Type) => {
+	return 'default' in schema ? JSON.stringify(schema.default) : '';
+};
+
+const getTypeString = (schema: JsonSchema7Type): string => {
+	if (!('type' in schema)) {
+		return '';
+	}
+	if ('enum' in schema) {
+		return schema.enum.map((i) => JSON.stringify(i)).join(' | ');
+	}
+	if (schema.type === 'object') {
+		if ('properties' in schema) {
+			return (
+				'{ ' +
+				Object.entries(schema.properties)
+					.map(([key, schema]): string => `${key}: ${getTypeString(schema)}`)
+					.join('; ') +
+				' }'
+			);
+		} else if ('additionalProperties' in schema) {
+			return `Record<string, ${getTypeString(schema.additionalProperties)}>`;
+		}
+	}
+	return Array.isArray(schema.type) ? schema.type.join(' | ') : schema.type;
+};
+---
+
+<h4 id={`entry-data-${Astro.props.collection}`}>Entry data</h4>
+{
+	entries
+		.sort(([a], [b]) => (a > b ? 1 : -1))
+		.map(([key, schema]) => {
+			const type = getTypeString(schema);
+			const dflt = getDefault(schema);
+			return (
+				<>
+					<h5>
+						<code>{key}</code>
+					</h5>
+					{(type || dflt) && (
+						<p>
+							{type && (
+								<>
+									<strong>Type:</strong> <code>{type}</code>
+								</>
+							)}
+							{dflt && type && <br />}
+							{dflt && (
+								<>
+									<strong>Default:</strong> <code>{dflt}</code>
+								</>
+							)}
+						</p>
+					)}
+					<p>{schema.description}</p>
+				</>
+			);
+		})
+}

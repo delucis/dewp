@@ -1,0 +1,162 @@
+---
+title: Collections Reference
+---
+
+import CollectionSchema from '../../../components/CollectionSchema.astro';
+
+This reference page documents in detail the collections added to an Astro project by DeWP’s collection loaders.
+
+## Data structure
+
+Each collection corresponds to one of WordPress’s data types available from the [WordPress REST API](https://developer.wordpress.org/rest-api/) and in general matches the schema of those endpoints.
+
+One important difference between the JSON responses returned by the REST API and DeWP’s content collections is that references between collections are encoded as [Astro collection references](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/#defining-collection-references) instead of as raw integers.
+This simplifies looking up related entries using Astro’s `getEntry()` and `getEntries()` functions.
+
+For example, post data contains an array specifying the categories that post belongs to.
+You can turn that array of references into a fully resolved array of category data using `getEntries()`:
+
+```js
+import { getEntry, getEntries } from 'astro:content';
+
+const myFirstPost = await getEntry('posts', '1');
+// [{ id: '1', data: { name: 'Hello world!', categories: [{ id: '1', collection: 'categories' }], ... } }]
+const categories = await getEntries(myFirstPost.data.categories);
+// [{ id: '1', data: { name: 'Uncategorized', ... } }]
+```
+
+## Collections
+
+Using `wpCollections()` in your content configuration adds the following content collections to your Astro project.
+
+### `posts`
+
+The `posts` collection contains entries from WordPress’s [`wp/v2/posts` endpoint](https://developer.wordpress.org/rest-api/reference/posts/).
+These are the blog posts and include fully rendered post content.
+
+#### Example usage
+
+```astro title="example-post.astro"
+---
+import { getEntry, render } from 'astro:content';
+const post = await getEntry('posts', '1');
+// post = {
+//   id: '1',
+//   collection: 'posts',
+//   data: {
+//     title: { rendered: 'Hello world!' },
+//     date: Wed Jun 04 2008
+//     // ...
+//   },
+//   ...
+// }
+
+const { Content } = render(post);
+---
+
+<h1 set:html={post.data.title.rendered} />
+<Content />
+```
+
+<CollectionSchema collection="PostSchema" />
+
+### `pages`
+
+The `pages` collection contains content from WordPress’s [`wp/v2/pages` endpoint](https://developer.wordpress.org/rest-api/reference/pages/).
+Pages include fully rendered content.
+
+Unlike posts, pages are hierarchical and one page can have a `parent` page, allowing for the creation of tree-like page relationships.
+
+#### Example usage
+
+```astro title="example-page.astro"
+---
+import { getEntry, render } from 'astro:content';
+
+const page = await getEntry('pages', '49');
+const { Content } = render(page);
+
+// Get the parent page if there is one:
+const parent = page.data.parent && await getEntry(page.data.parent);
+---
+
+<h1 set:html={page.data.title.rendered} />
+
+<Content />
+
+{parent && (
+  <p>
+    This page is a child of <span set:html={parent.data.title.rendered} />
+  </page>
+)}
+```
+
+<CollectionSchema collection="PageSchema" />
+
+### `categories`
+
+The `categories` collection contains entries from WordPress’s [`wp/v2/categories` endpoint](https://developer.wordpress.org/rest-api/reference/categories/).
+Entries in the `posts` collection can contain references to categories.
+Metadata about individual categories such as their name, description, and number of posts are stored in the `categories` collection.
+
+<CollectionSchema collection="CategorySchema" />
+
+### `tags`
+
+The `tags` collection contains entries from WordPress’s [`wp/v2/tags` endpoint](https://developer.wordpress.org/rest-api/reference/tags/).
+Entries in the `posts` collection can contain references to tags.
+Metadata about individual tags such as their name, description, and number of posts are stored in the `tags` collection.
+
+<CollectionSchema collection="TagSchema" />
+
+### `users`
+
+The `users` collection contains users from WordPress’s [`wp/v2/users`](https://developer.wordpress.org/rest-api/reference/users/) endpoint.
+
+<CollectionSchema collection="UserSchema" />
+
+### `comments`
+
+The `comments` collection contains user comments from WordPress’s [`wp/v2/comments`](https://developer.wordpress.org/rest-api/reference/comments/) endpoint.
+
+<CollectionSchema collection="CommentSchema" />
+
+### `media`
+
+The `media` collection contains media attachments from WordPress’s [`wp/v2/media`](https://developer.wordpress.org/rest-api/reference/media/) endpoint.
+
+<CollectionSchema collection="MediaSchema" />
+
+### `statuses`
+
+The `statuses` collection contains status definitions from WordPress’s [`wp/v2/statuses`](https://developer.wordpress.org/rest-api/reference/post-statuses/) endpoint.
+
+<CollectionSchema collection="StatusSchema" />
+
+### `taxonomies`
+
+The `taxonomies` collection contains taxonomy definitions from WordPress’s [`wp/v2/taxonomies`](https://developer.wordpress.org/rest-api/reference/taxonomies/) endpoint.
+
+<CollectionSchema collection="TaxonomySchema" />
+
+### `types`
+
+The `types` collection contains post type definitions from WordPress’s [`wp/v2/types`](https://developer.wordpress.org/rest-api/reference/types/) endpoint.
+
+<CollectionSchema collection="TypeSchema" />
+
+### `site-settings`
+
+The `site-settings` collection contains a single entry with some basic configuration options exposed by WordPress.
+
+#### Example usage
+
+The easiest way to load site settings is with DeWP’s `getSiteSettings` utility:
+
+```ts
+import { getSiteSettings } from 'dewp/content-utils';
+
+const settings = await getSiteSettings();
+```
+
+<CollectionSchema collection="SiteSettingsSchema" />

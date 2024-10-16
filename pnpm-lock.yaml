@@ -39,6 +39,9 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
+      zod-to-json-schema:
+        specifier: ^3.23.3
+        version: 3.23.3(zod@3.23.8)
 
   examples/blog-starter:
     dependencies:
