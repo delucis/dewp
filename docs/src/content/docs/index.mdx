@@ -1,13 +1,13 @@
 ---
 title: Getting started
-description: Tools for migrating from WordPress to Astro
+description: Use your WordPress data in Astro projects
 template: splash
 hero:
   title: DeWP
-  tagline: Tools for migrating from WordPress to Astro
+  tagline: Use your WordPress data in Astro projects
 ---
 
-import { Steps } from '@astrojs/starlight/components';
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
 import { PackageManagers } from 'starlight-package-managers';
 
 :::note
@@ -21,13 +21,22 @@ Please [report bugs](https://github.com/delucis/dewp) that you find.
 
 ## Features
 
-This project contains tools for incrementally migrating from WordPress to Astro.
+This project contains several tools for using your WordPress data in Astro projects.
+You can use them to build headless WordPress sites with Astro or even migrate your data away from WordPress to Astro entirely.
 
-- A set of content loaders, which load the content from a WordPress site into your Astro project.
-- A blog template designed to handle WordPress data.
-- More coming soon!
+<CardGrid>
+	<Card title="Content Loaders" icon="document">
+		`dewp/loaders` loads your content using the WordPress REST API so you can use it with Astro’s
+		content collection API.
+	</Card>
+	<Card title="Starter Template" icon="astro">
+		Use DeWP’s blog template to get started with an Astro project using headless WordPress data.
+	</Card>
+</CardGrid>
 
-## Getting started
+More coming soon!
+
+## Create a new project
 
 The easiest way to get started is to create a new Astro project using the DeWP blog template.
 
@@ -57,13 +66,13 @@ The easiest way to get started is to create a new Astro project using the DeWP b
 
 3. You can now [start the Astro dev server](https://docs.astro.build/en/install-and-setup/#start-the-astro-dev-server) and see a live preview of your project while you build.
 
-   The template shows links to all the pages in the linked WordPress site on the homepage and links to the 10 most recent blog posts at `/blog`.
-
 </Steps>
 
-### Manual set-up
+The template shows links to all the pages in the linked WordPress site on the homepage and links to the 10 most recent blog posts at `/blog`.
 
-If you prefer to add DeWP to an existing Astro project, follow these steps.
+## Add to an existing project
+
+If you prefer to add the DeWP content loaders to an existing Astro project, follow these steps.
 
 <Steps>
 
@@ -83,7 +92,9 @@ If you prefer to add DeWP to an existing Astro project, follow these steps.
    };
    ```
 
-3. You can now use Astro’s [content collection APIs](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/) to get your WordPress data in your components. In the following example, the `posts` collection is loaded in order to display each post’s title:
+3. You can now use Astro’s [content collection APIs](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/) to get your WordPress data in your components.
+
+   In the following example, the `posts` collection is loaded in order to display each post’s title:
 
    ```astro title="example.astro"
    ---

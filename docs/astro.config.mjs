@@ -9,7 +9,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'DeWP',
-			description: 'Tools for migrating from WordPress to Astro',
+			description: 'Use your WordPress data in Astro projects',
 			social: {
 				github: 'https://github.com/delucis/dewp',
 			},
