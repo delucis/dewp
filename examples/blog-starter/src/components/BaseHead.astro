@@ -4,9 +4,12 @@
 import '../styles/global.css';
 
 interface Props {
+	/** Title of the current page used in SEO metadata like the `<title>` tag. */
 	title: string;
+	/** Description of the current page used in SEO metadata like the `<meta name="description">` tag. */
 	description: string;
-	image?: string;
+	/** Optional open graph image for the current page. */
+	image?: string | undefined;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);

@@ -1,48 +1,38 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import { getSiteSettings } from 'dewp/content-utils';
 import PageIndex from '../components/PageIndex.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
 const { name, description, url } = await getSiteSettings();
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={name} description={description} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the <a href="https://github.com/delucis/dewp">DeWP</a> blog starter template for Astro,
-				which loads content from an existing WordPress website.
-			</p>
-			<p>
-				Currently this site is loading its content from <a href={url}><code>{url}</code></a>.
-			</p>
-			<p>
-				You can configure the content source in the <code>src/content/config.ts</code> file.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, <a href="https://github.com/delucis/dewp">reach out on GitHub</a
-				> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
+<BaseLayout title={name} description={description}>
+	<main>
+		<h1>🧑‍🚀 Hello, Astronaut!</h1>
+		<p>
+			Welcome to the <a href="https://github.com/delucis/dewp">DeWP</a> blog starter template for Astro,
+			which loads content from an existing WordPress website.
+		</p>
+		<p>
+			Currently this site is loading its content from <a href={url}><code>{url}</code></a>.
+		</p>
+		<p>
+			You can configure the content source in the <code>src/content/config.ts</code> file.
+		</p>
+		<p>Here are a few ideas on how to get started with the template:</p>
+		<ul>
+			<li>Edit this page in <code>src/pages/index.astro</code></li>
+			<li>Edit the site header items in <code>src/components/Header.astro</code></li>
+			<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
+			<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
+		</ul>
+		<p>
+			Have fun! If you get stuck, <a href="https://github.com/delucis/dewp">reach out on GitHub</a> or
+			<a href="https://astro.build/chat">join us on Discord</a> to ask questions.
+		</p>
 
-			<h2>Page Index</h2>
-			<p>Here is an overview of all the WordPress pages in your site:</p>
-			<PageIndex />
-		</main>
-		<Footer />
-	</body>
-</html>
+		<h2>Page Index</h2>
+		<p>Here is an overview of all the WordPress pages in your site:</p>
+		<PageIndex />
+	</main>
+</BaseLayout>

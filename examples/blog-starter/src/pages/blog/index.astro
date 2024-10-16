@@ -1,10 +1,8 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import { getSiteSettings } from 'dewp/content-utils';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const { name, description } = await getSiteSettings();
 
@@ -13,107 +11,102 @@ const posts = (await getCollection('posts'))
 	.slice(0, 10);
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={name} description={description} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
+<BaseLayout title={name} description={description}>
+	<main>
+		<section>
+			<ul>
+				{
+					posts.map(async (post) => {
+						const heroImage =
+							post.data.featured_media && (await getEntry(post.data.featured_media));
+						return (
+							<li>
+								<a href={`/blog/${post.data.slug}/`}>
+									{heroImage && (
+										<img width={720} height={360} src={heroImage?.data.source_url} alt="" />
+									)}
+									<h4 class="title" set:html={post.data.title.rendered} />
+								</a>
+								<p class="date">
+									<FormattedDate date={post.data.date} />
+								</p>
+							</li>
+						);
+					})
 				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map(async (post) => {
-							const heroImage =
-								post.data.featured_media && (await getEntry(post.data.featured_media));
-							return (
-								<li>
-									<a href={`/blog/${post.data.slug}/`}>
-										{heroImage && (
-											<img width={720} height={360} src={heroImage?.data.source_url} alt="" />
-										)}
-										<h4 class="title" set:html={post.data.title.rendered} />
-									</a>
-									<p class="date">
-										<FormattedDate date={post.data.date} />
-									</p>
-								</li>
-							);
-						})
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+			</ul>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	main {
+		width: 960px;
+	}
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2rem;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	ul li {
+		width: calc(50% - 1rem);
+	}
+	ul li * {
+		text-decoration: none;
+		transition: 0.2s ease;
+	}
+	ul li:first-child {
+		width: 100%;
+		margin-bottom: 1rem;
+		text-align: center;
+	}
+	ul li:first-child img {
+		width: 100%;
+	}
+	ul li:first-child .title {
+		font-size: 2.369rem;
+	}
+	ul li img {
+		margin-bottom: 0.5rem;
+		border-radius: 12px;
+		aspect-ratio: 2;
+		object-fit: cover;
+	}
+	ul li a {
+		display: block;
+	}
+	.title {
+		margin: 0;
+		color: rgb(var(--black));
+		line-height: 1;
+	}
+	.date {
+		margin: 0;
+		color: rgb(var(--gray));
+	}
+	ul li a:hover h4,
+	ul li a:hover .date {
+		color: rgb(var(--accent));
+	}
+	ul a:hover img {
+		box-shadow: var(--box-shadow);
+	}
+	@media (max-width: 720px) {
+		ul {
+			gap: 0.5em;
+		}
+		ul li {
+			width: 100%;
+			text-align: center;
+		}
+		ul li:first-child {
+			margin-bottom: 0;
+		}
+		ul li:first-child .title {
+			font-size: 1.563em;
+		}
+	}
+</style>

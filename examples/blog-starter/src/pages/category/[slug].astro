@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Category from '../../layouts/Category.astro';
+
+export async function getStaticPaths() {
+	const categories = await getCollection('categories');
+
+	return await Promise.all(
+		categories.map(async (category) => ({
+			params: { slug: category.data.slug },
+			props: category,
+		}))
+	);
+}
+
+const category = Astro.props;
+---
+
+<Category {...category.data} />
