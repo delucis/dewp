@@ -1,6 +1,6 @@
 # DeWP
 
-Tools for migrating from WordPress to Astro
+Use your WordPress data in Astro projects
 
 ## Documentation
 
