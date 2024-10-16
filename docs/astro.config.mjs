@@ -13,7 +13,7 @@ export default defineConfig({
 			social: {
 				github: 'https://github.com/delucis/dewp',
 			},
-			sidebar: ['index', { label: 'Reference', items: ['reference/collections'] }],
+			sidebar: ['index', { label: 'Reference', autogenerate: { directory: 'reference' } }],
 		}),
 	],
 });

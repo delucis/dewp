@@ -1,0 +1,44 @@
+---
+title: Utilities Reference
+description: Documentation of DeWP’s utility functions for working with content.
+---
+
+This reference page documents utility functions provided by DeWP for working with your WordPress content in Astro.
+
+## Content utilities
+
+Content utilities help simplify common operations with your WordPress content.
+
+These utilities can be imported from the `dewp/content-utils` module.
+
+```ts
+import { getSiteSettings, resolvePageSlug } from 'dewp/content-utils';
+```
+
+### `getSiteSettings()`
+
+**Type:** `() => Promise<CollectionEntry<'site-settings'>>`
+
+Get settings from the [`site-settings`](/dewp/reference/collections/#site-settings) content collection.
+Includes `name` (the site title), `description`, and a couple of other handy bits of metadata.
+
+```ts
+const { name, description } = await getSiteSettings();
+```
+
+### `resolvePageSlug(page)`
+
+**Type:** `(page: CollectionEntry<'pages'>) => Promise<string>`
+
+If pages have parents, WordPress prepends parent slugs to the page slug.
+For example, given a `lion` page with a `big-cats` parent, the page would be served at `big-cats/lion`.
+
+The `resolvePageSlug()` function resolves parent pages to construct a multi-segment path in the same way.
+
+```ts
+const lionPage = await getEntry('pages', '🦁');
+console.log(lionPage.data.slug); // => "lion"
+
+const slug = await resolvePageSlug(lionPage);
+console.log(slug); // => "big-cats/lion"
+```
