@@ -1,8 +1,9 @@
 ---
-title: DeWP
+title: Getting started
 description: Tools for migrating from WordPress to Astro
 template: splash
 hero:
+  title: DeWP
   tagline: Tools for migrating from WordPress to Astro
 ---
 
@@ -56,6 +57,8 @@ The easiest way to get started is to create a new Astro project using the DeWP b
 
 3. You can now [start the Astro dev server](https://docs.astro.build/en/install-and-setup/#start-the-astro-dev-server) and see a live preview of your project while you build.
 
+   The template shows links to all the pages in the linked WordPress site on the homepage and links to the 10 most recent blog posts at `/blog`.
+
 </Steps>
 
 ### Manual set-up
@@ -80,6 +83,14 @@ If you prefer to add DeWP to an existing Astro project, follow these steps.
    };
    ```
 
-3. You can now use Astro’s [content collection APIs](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/) to get your WordPress data in your components.
+3. You can now use Astro’s [content collection APIs](https://5-0-0-beta.docs.astro.build/en/guides/content-collections/) to get your WordPress data in your components. In the following example, the `posts` collection is loaded in order to display each post’s title:
+
+   ```astro title="example.astro"
+   ---
+   import { getCollection } from 'astro:content';
+   const posts = await getCollection('posts');
+   ---
+   {posts.map((post) => <p>{post.data.title}</p>)}
+   ```
 
 </Steps>
