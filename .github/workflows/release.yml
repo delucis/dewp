@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: 'pnpm'
 
       - name: Install Dependencies
@@ -37,5 +37,5 @@ jobs:
           commit: '[ci] release'
           title: '[ci] release'
         env:
-          GITHUB_TOKEN: ${{ secrets.CHRISBOT_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
