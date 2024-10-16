@@ -1,5 +1,11 @@
 # dewp
 
+## 0.0.3
+
+### Patch Changes
+
+- [`f35d09a`](https://github.com/delucis/dewp/commit/f35d09af571343f9e0066b7310e016e4a7cc8790) Thanks [@delucis](https://github.com/delucis)! - Adds descriptions to schemas and improves some enums and references
+
 ## 0.0.2
 
 ### Patch Changes
