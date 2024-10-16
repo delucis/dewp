@@ -2,10 +2,11 @@
 import { getEntries, getEntry, type CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import BaseLayout from './BaseLayout.astro';
+import Comments from '../components/Comments.astro';
 
 type Props = CollectionEntry<'posts'>['data'];
 
-const { title, excerpt, date, modified, featured_media } = Astro.props;
+const { id, title, excerpt, date, modified, featured_media } = Astro.props;
 
 const tags = await getEntries(Astro.props.tags);
 const categories = await getEntries(Astro.props.categories);
@@ -73,6 +74,7 @@ const heroImage = featured_media && (await getEntry(featured_media));
 						</>
 					)
 				}
+				<Comments {id} />
 			</div>
 		</article>
 	</main>

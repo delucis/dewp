@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+	id: number;
+}
+
+const { id } = Astro.props;
+const comments = await getCollection('comments', (comment) => comment.data.post?.id === String(id));
+---
+
+{
+	comments.length > 0 && (
+		<section>
+			<h2>Comments ({comments.length})</h2>
+			<ol class="comments">
+				{comments
+					.sort((a, b) => (a.data.date < b.data.date ? -1 : 1))
+					.map((comment) => (
+						<li class="comment" id={`comment-${comment.data.id}`}>
+							<header class="comment-header">
+								<img
+									class="comment-author-avatar"
+									src={comment.data.author_avatar_urls[96]}
+									width="32"
+									height="32"
+									alt=""
+								/>
+								<div class="comment-byline">
+									<div class="comment-author-name">
+										{comment.data.author_url ? (
+											<a href={comment.data.author_url}>{comment.data.author_name}</a>
+										) : (
+											<span>{comment.data.author_name}</span>
+										)}
+									</div>
+									<div>
+										<a class="comment-date" href={`#comment-${comment.data.id}`}>
+											<time datetime={comment.data.date.toISOString()}>
+												{comment.data.date.toLocaleDateString('en-US', { dateStyle: 'medium' })}
+											</time>
+										</a>
+									</div>
+								</div>
+							</header>
+							<div set:html={comment.data.content.rendered} />
+						</li>
+					))}
+			</ol>
+		</section>
+	)
+}
+
+<style>
+	.comment-header {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+	}
+	.comments {
+		padding: 0;
+		list-style: none;
+	}
+	.comment-author-avatar {
+		width: 3.5rem;
+		height: 3.5rem;
+		border-radius: 999rem;
+	}
+	.comment-byline {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.4;
+	}
+	.comment-author-name {
+		font-weight: 700;
+	}
+	.comment-date {
+		color: rgba(var(--gray-dark), 0.7);
+	}
+</style>
