@@ -161,7 +161,9 @@ export const CommentSchema = z.object({
 	parent: z
 		.preprocess(coerceId, reference('comments').optional())
 		.describe('A reference to a parent comment.'),
-	post: z.number().describe('A reference to the associated post.'),
+	post: z
+		.preprocess(coerceId, z.union([reference('posts'), reference('pages')]).optional())
+		.describe('A reference to the associated post.'),
 	status: z.string().describe('State of the comment.'),
 	type: z.string().describe('Type of the comment.'),
 	author_avatar_urls: z.record(z.string().url()).describe('Avatar URLs for the comment author.'),
