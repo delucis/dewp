@@ -1,5 +1,11 @@
 # dewp
 
+## 0.0.4
+
+### Patch Changes
+
+- [`f5c187b`](https://github.com/delucis/dewp/commit/f5c187b1d37690b88b71d7973895824aaa407147) Thanks [@delucis](https://github.com/delucis)! - Makes `post` field in `comments` collection a reference.
+
 ## 0.0.3
 
 ### Patch Changes
