@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import Tag from '../../layouts/Tag.astro';
+
+export async function getStaticPaths() {
+	const tags = await getCollection('tags');
+
+	return await Promise.all(
+		tags.map(async (tag) => ({
+			params: { slug: tag.data.slug },
+			props: tag,
+		}))
+	);
+}
+
+const category = Astro.props;
+---
+
+<Tag {...category.data} />

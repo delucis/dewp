@@ -62,7 +62,13 @@ const heroImage = featured_media && (await getEntry(featured_media));
 						<>
 							<hr />
 							<p>
-								<strong>Tags:</strong> {tags.map((tag) => tag.data.name).join(', ')}
+								<strong>Tags:</strong>{' '}
+								{tags.map((tag, i, { length }) => (
+									<>
+										<a href={`/tag/${tag.data.slug}`}>{tag.data.name}</a>
+										{i < length - 1 && '/'}
+									</>
+								))}
 							</p>
 						</>
 					)
