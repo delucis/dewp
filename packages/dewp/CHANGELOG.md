@@ -1,5 +1,11 @@
 # dewp
 
+## 0.0.5
+
+### Patch Changes
+
+- [`af35d76`](https://github.com/delucis/dewp/commit/af35d76aaff174daff1ebe1a76503e2349ea076e) Thanks [@delucis](https://github.com/delucis)! - Updates description in README & package.json
+
 ## 0.0.4
 
 ### Patch Changes
