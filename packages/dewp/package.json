@@ -21,9 +21,9 @@
 		"./content-utils": "./content-utils.ts"
 	},
 	"devDependencies": {
-		"astro": "^5.0.0-beta"
+		"astro": "^5.0.8"
 	},
 	"peerDependencies": {
-		"astro": "^5.0.0-beta"
+		"astro": "^5.0.8"
 	}
 }
