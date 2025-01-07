@@ -13,7 +13,7 @@
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
 		"@astrojs/starlight": "^0.28.3",
-		"astro": "^4.16.17",
+		"astro": "^4.16.18",
 		"astro-og-canvas": "^0.5.4",
 		"canvaskit-wasm": "^0.39.1",
 		"sharp": "^0.32.5",
