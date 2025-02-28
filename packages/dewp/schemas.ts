@@ -275,6 +275,7 @@ export const StatusSchema = z.object({
 	slug: z.string().describe('An alphanumeric identifier for the status.'),
 	date_floating: z
 		.boolean()
+		.optional()
 		.describe('Whether posts of this status may have floating published dates.'),
 });
 
