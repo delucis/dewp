@@ -5,7 +5,7 @@
 		"withastro",
 		"astro-loader"
 	],
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"author": "Chris Swithinbank <swithinbank@gmail.com>",
 	"homepage": "https://delucis.github.io/dewp/",
 	"repository": {
