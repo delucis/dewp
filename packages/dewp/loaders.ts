@@ -1,5 +1,6 @@
 import { AstroError } from 'astro/errors';
 import type { DataStore, Loader } from 'astro/loaders';
+import type { AstroIntegrationLogger } from 'astro';
 import { defineCollection } from 'astro:content';
 import {
 	CategorySchema,
@@ -59,8 +60,8 @@ export function wpCollections({ endpoint }: { endpoint: string }) {
 function makeLoader({ name, url }: { name: string; url: URL }) {
 	const loader: Loader = {
 		name,
-		async load({ store, parseData }) {
-			const items = await fetchAll(url);
+		async load({ logger. store, parseData }) {
+			const items = await fetchAll(logger. url);
 			for (const rawItem of items) {
 				const item = await parseData({ id: String(rawItem.id), data: rawItem });
 				const storeEntry: DataEntry = { id: String(item.id), data: item };
@@ -77,9 +78,10 @@ function makeLoader({ name, url }: { name: string; url: URL }) {
 /**
  * Fetch all pages for a paginated WP endpoint.
  */
-async function fetchAll(url: URL, page = 1, results: any[] = []) {
+async function fetchAll(logger: AstroIntegrationLogger, url: URL, page = 1, results: any[] = []) {
 	url.searchParams.set('per_page', '100');
 	url.searchParams.set('page', String(page));
+	logger.info(`Fetch ${url}`)
 	const response = await fetch(url);
 	let data = await response.json();
 	if (!Array.isArray(data)) {
@@ -97,6 +99,6 @@ async function fetchAll(url: URL, page = 1, results: any[] = []) {
 	}
 	results.push(...data);
 	const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-	if (page < totalPages) return fetchAll(url, page + 1, results);
+	if (page < totalPages) return fetchAll(logger. url, page + 1, results);
 	return results;
 }
