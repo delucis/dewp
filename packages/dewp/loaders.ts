@@ -60,8 +60,8 @@ export function wpCollections({ endpoint }: { endpoint: string }) {
 function makeLoader({ name, url }: { name: string; url: URL }) {
 	const loader: Loader = {
 		name,
-		async load({ logger. store, parseData }) {
-			const items = await fetchAll(logger. url);
+		async load({ logger, store, parseData }) {
+			const items = await fetchAll(logger, url);
 			for (const rawItem of items) {
 				const item = await parseData({ id: String(rawItem.id), data: rawItem });
 				const storeEntry: DataEntry = { id: String(item.id), data: item };
@@ -99,6 +99,6 @@ async function fetchAll(logger: AstroIntegrationLogger, url: URL, page = 1, resu
 	}
 	results.push(...data);
 	const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
-	if (page < totalPages) return fetchAll(logger. url, page + 1, results);
+	if (page < totalPages) return fetchAll(logger, url, page + 1, results);
 	return results;
 }
