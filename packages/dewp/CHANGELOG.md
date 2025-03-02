@@ -1,5 +1,11 @@
 # dewp
 
+## 0.0.6
+
+### Patch Changes
+
+- [#10](https://github.com/delucis/dewp/pull/10) [`9124366`](https://github.com/delucis/dewp/commit/912436625a292c2ce461264ed98f8aa1de90ec36) Thanks [@igk1972](https://github.com/igk1972)! - Fixes `StatusSchema` for better Wordpress 5.x compatibility
+
 ## 0.0.5
 
 ### Patch Changes
