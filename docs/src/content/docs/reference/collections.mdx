@@ -88,7 +88,7 @@ const parent = page.data.parent && await getEntry(page.data.parent);
 {parent && (
   <p>
     This page is a child of <span set:html={parent.data.title.rendered} />
-  </page>
+  </p>
 )}
 ```
 
